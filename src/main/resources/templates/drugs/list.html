@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>药品信息管理 - 药店管理系统</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.0/css/bootstrap.min.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        .sidebar {
+            min-height: 100vh;
+            background: #2c3e50;
+            color: white;
+        }
+        .sidebar a {
+            color: #ecf0f1;
+            text-decoration: none;
+            padding: 15px 20px;
+            display: block;
+        }
+        .sidebar a:hover {
+            background: #34495e;
+        }
+        .sidebar a.active {
+            background: #3498db;
+        }
+        .content {
+            padding: 20px;
+        }
+        .navbar-brand {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <nav class="col-md-2 d-md-block sidebar">
+                <div class="position-sticky">
+                    <h4 class="text-center py-4">🏥 药店管理系统</h4>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a th:href="@{/drugs}" class="nav-link active">
+                                <i class="bi bi-capsule"></i> 药品信息管理
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a th:href="@{/inventory}" class="nav-link">
+                                <i class="bi bi-box-seam"></i> 库存管理
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a th:href="@{/sales}" class="nav-link">
+                                <i class="bi bi-cart3"></i> 销售与查询
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <main class="col-md-10 ms-sm-auto content">
+                <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4 rounded">
+                    <div class="container-fluid">
+                        <span class="navbar-brand mb-0 h1">药品信息管理</span>
+                    </div>
+                </nav>
+
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">药品信息列表</h5>
+                        <div>
+                            <a th:href="@{/drugs/new}" class="btn btn-primary">
+                                <i class="bi bi-plus-circle"></i> 添加药品
+                            </a>
+                            <form th:action="@{/drugs/search}" method="get" class="d-inline ms-2">
+                                <input type="text" name="keyword" placeholder="搜索药品..." class="form-control d-inline-block" style="width: 200px;">
+                                <button type="submit" class="btn btn-outline-secondary">搜索</button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+                        <div th:if="${keyword}" class="alert alert-info">
+                            搜索关键词: <strong th:text="${keyword}"></strong>
+                        </div>
+
+                        <table class="table table-striped table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>药品编码</th>
+                                    <th>药品名称</th>
+                                    <th>规格</th>
+                                    <th>生产企业</th>
+                                    <th>单价(元)</th>
+                                    <th>类别</th>
+                                    <th>单位</th>
+                                    <th>处方药</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="drug : ${drugs}">
+                                    <td th:text="${drug.id}"></td>
+                                    <td th:text="${drug.drugCode}"></td>
+                                    <td th:text="${drug.name}"></td>
+                                    <td th:text="${drug.specification}"></td>
+                                    <td th:text="${drug.manufacturer}"></td>
+                                    <td th:text="${'¥' + drug.price}"></td>
+                                    <td th:text="${drug.category}"></td>
+                                    <td th:text="${drug.unit}"></td>
+                                    <td>
+                                        <span th:if="${drug.prescriptionRequired}" class="badge bg-danger">是</span>
+                                        <span th:unless="${drug.prescriptionRequired}" class="badge bg-secondary">否</span>
+                                    </td>
+                                    <td>
+                                        <a th:href="@{/drugs/{id}/edit(id=${drug.id})}" class="btn btn-sm btn-warning">编辑</a>
+                                        <a th:href="@{/drugs/{id}/delete(id=${drug.id})}" class="btn btn-sm btn-danger"
+                                           onclick="return confirm('确定删除该药品吗？')">删除</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div th:if="${#lists.isEmpty(drugs)}" class="text-center py-4">
+                            <p class="text-muted">暂无药品信息</p>
+                            <a th:href="@{/drugs/new}" class="btn btn-primary">添加第一个药品</a>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script th:src="@{/webjars/jquery/3.7.1/jquery.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap/5.3.0/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

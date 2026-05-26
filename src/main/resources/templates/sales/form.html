@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新建销售 - 药店管理系统</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.0/css/bootstrap.min.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        .sidebar {
+            min-height: 100vh;
+            background: #2c3e50;
+            color: white;
+        }
+        .sidebar a {
+            color: #ecf0f1;
+            text-decoration: none;
+            padding: 15px 20px;
+            display: block;
+        }
+        .sidebar a:hover {
+            background: #34495e;
+        }
+        .sidebar a.active {
+            background: #3498db;
+        }
+        .content {
+            padding: 20px;
+        }
+        .navbar-brand {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <nav class="col-md-2 d-md-block sidebar">
+                <div class="position-sticky">
+                    <h4 class="text-center py-4">🏥 药店管理系统</h4>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a th:href="@{/drugs}" class="nav-link">
+                                <i class="bi bi-capsule"></i> 药品信息管理
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a th:href="@{/inventory}" class="nav-link">
+                                <i class="bi bi-box-seam"></i> 库存管理
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a th:href="@{/sales}" class="nav-link active">
+                                <i class="bi bi-cart3"></i> 销售与查询
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <main class="col-md-10 ms-sm-auto content">
+                <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4 rounded">
+                    <div class="container-fluid">
+                        <span class="navbar-brand mb-0 h1">销售与查询</span>
+                    </div>
+                </nav>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h5>新建销售</h5>
+                    </div>
+                    <div class="card-body">
+                        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+                        <form th:action="@{/sales}" method="post">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">药品 <span class="text-danger">*</span></label>
+                                    <select name="drugId" class="form-select" required>
+                                        <option value="">请选择药品</option>
+                                        <option th:each="inv : ${inventoryList}"
+                                                th:value="${inv.drug.id}"
+                                                th:data-price="${inv.drug.price}"
+                                                th:data-stock="${inv.quantity}"
+                                                th:text="${inv.drug.name + ' (库存:' + inv.quantity + ' 盒)'}">
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">销售数量 <span class="text-danger">*</span></label>
+                                    <input type="number" name="quantity" min="1" class="form-control" required>
+                                    <small class="text-muted">当前库存将自动减少</small>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">客户名称</label>
+                                    <input type="text" name="customerName" class="form-control" placeholder="可为空">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">支付方式</label>
+                                    <select name="paymentMethod" class="form-select">
+                                        <option value="现金">现金</option>
+                                        <option value="微信支付">微信支付</option>
+                                        <option value="支付宝">支付宝</option>
+                                        <option value="银行卡">银行卡</option>
+                                        <option value="医保卡">医保卡</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">备注</label>
+                                <textarea name="remarks" class="form-control" rows="2"></textarea>
+                            </div>
+
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <a th:href="@{/sales}" class="btn btn-secondary">取消</a>
+                                <button type="submit" class="btn btn-primary">确认销售</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script th:src="@{/webjars/jquery/3.7.1/jquery.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap/5.3.0/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

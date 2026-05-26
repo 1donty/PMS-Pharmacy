@@ -1,0 +1,12 @@
+target/
+node_modules/
+apache-maven-3.9.5/
+tools/
+maven.zip
+example_db.sqlite
+*.db
+.idea/
+*.iml
+.log
+.DS_Store
+Thumbs.db
