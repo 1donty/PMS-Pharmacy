@@ -2,10 +2,17 @@ package com.pharmacy.config;
 
 import com.pharmacy.entity.Drug;
 import com.pharmacy.entity.Inventory;
+import com.pharmacy.entity.Menu;
+import com.pharmacy.entity.Role;
+import com.pharmacy.entity.User;
 import com.pharmacy.repository.DrugRepository;
 import com.pharmacy.repository.InventoryRepository;
+import com.pharmacy.repository.MenuRepository;
+import com.pharmacy.repository.RoleRepository;
+import com.pharmacy.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -19,8 +26,30 @@ public class DataInitializer implements CommandLineRunner {
     @Autowired
     private InventoryRepository inventoryRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private RoleRepository roleRepository;
+
+    @Autowired
+    private MenuRepository menuRepository;
+
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
+
     @Override
     public void run(String... args) throws Exception {
+        // 初始化菜单
+        initMenus();
+        
+        // 初始化角色
+        initRoles();
+        
+        // 初始化用户
+        initUsers();
+        
+        // 初始化药品和库存
         if (drugRepository.count() == 0) {
             Drug drug1 = new Drug();
             drug1.setName("阿莫西林胶囊");
@@ -134,6 +163,135 @@ public class DataInitializer implements CommandLineRunner {
             inventoryRepository.save(inv5);
 
             System.out.println("Sample data initialized successfully!");
+        }
+    }
+
+    private void initMenus() {
+        if (menuRepository.count() == 0) {
+            // 药品管理菜单
+            Menu drugMenu = new Menu();
+            drugMenu.setName("药品信息管理");
+            drugMenu.setUrl("/drugs");
+            drugMenu.setIcon("bi bi-capsule");
+            drugMenu.setSortOrder(1);
+            drugMenu.setEnabled(true);
+            drugMenu.setParentId(null);
+            menuRepository.save(drugMenu);
+
+            // 库存管理菜单
+            Menu inventoryMenu = new Menu();
+            inventoryMenu.setName("库存管理");
+            inventoryMenu.setUrl("/inventory");
+            inventoryMenu.setIcon("bi bi-box-seam");
+            inventoryMenu.setSortOrder(2);
+            inventoryMenu.setEnabled(true);
+            inventoryMenu.setParentId(null);
+            menuRepository.save(inventoryMenu);
+
+            // 销售管理菜单
+            Menu salesMenu = new Menu();
+            salesMenu.setName("销售与查询");
+            salesMenu.setUrl("/sales");
+            salesMenu.setIcon("bi bi-cart3");
+            salesMenu.setSortOrder(3);
+            salesMenu.setEnabled(true);
+            salesMenu.setParentId(null);
+            menuRepository.save(salesMenu);
+
+            // 用户管理菜单
+            Menu userMenu = new Menu();
+            userMenu.setName("用户管理");
+            userMenu.setUrl("/users");
+            userMenu.setIcon("bi bi-users");
+            userMenu.setSortOrder(4);
+            userMenu.setEnabled(true);
+            userMenu.setParentId(null);
+            menuRepository.save(userMenu);
+
+            // 角色管理菜单
+            Menu roleMenu = new Menu();
+            roleMenu.setName("角色管理");
+            roleMenu.setUrl("/roles");
+            roleMenu.setIcon("bi bi-shield");
+            roleMenu.setSortOrder(5);
+            roleMenu.setEnabled(true);
+            roleMenu.setParentId(null);
+            menuRepository.save(roleMenu);
+
+            // 菜单管理菜单
+            Menu menuMenu = new Menu();
+            menuMenu.setName("菜单管理");
+            menuMenu.setUrl("/menus");
+            menuMenu.setIcon("bi bi-list");
+            menuMenu.setSortOrder(6);
+            menuMenu.setEnabled(true);
+            menuMenu.setParentId(null);
+            menuRepository.save(menuMenu);
+
+            System.out.println("Menus initialized successfully!");
+        }
+    }
+
+    private void initRoles() {
+        if (roleRepository.count() == 0) {
+            // 管理员角色
+            Role adminRole = new Role();
+            adminRole.setName("管理员");
+            adminRole.setCode("ADMIN");
+            adminRole.setDescription("系统管理员，拥有所有权限");
+            roleRepository.save(adminRole);
+
+            // 普通用户角色
+            Role userRole = new Role();
+            userRole.setName("普通用户");
+            userRole.setCode("USER");
+            userRole.setDescription("普通用户，拥有基本操作权限");
+            roleRepository.save(userRole);
+
+            // 给管理员角色分配所有菜单权限
+            adminRole.setMenus(new java.util.HashSet<>(menuRepository.findAll()));
+            roleRepository.save(adminRole);
+
+            // 给普通用户角色分配基础菜单权限
+            userRole.setMenus(new java.util.HashSet<>(menuRepository.findByParentIdIsNull()));
+            roleRepository.save(userRole);
+
+            System.out.println("Roles initialized successfully!");
+        }
+    }
+
+    private void initUsers() {
+        if (userRepository.count() == 0) {
+            Role adminRole = roleRepository.findByCode("ADMIN").orElse(null);
+            
+            // 管理员用户
+            User admin = new User();
+            admin.setUsername("admin");
+            admin.setPassword(passwordEncoder.encode("admin123"));
+            admin.setRealName("系统管理员");
+            admin.setEmail("admin@pharmacy.com");
+            admin.setPhone("13800138000");
+            admin.setEnabled(true);
+            if (adminRole != null) {
+                admin.getRoles().add(adminRole);
+            }
+            userRepository.save(admin);
+
+            // 普通用户
+            Role userRole = roleRepository.findByCode("USER").orElse(null);
+            User user = new User();
+            user.setUsername("user");
+            user.setPassword(passwordEncoder.encode("user123"));
+            user.setRealName("普通用户");
+            user.setEmail("user@pharmacy.com");
+            user.setPhone("13900139000");
+            user.setEnabled(true);
+            if (userRole != null) {
+                user.getRoles().add(userRole);
+            }
+            userRepository.save(user);
+
+            System.out.println("Users initialized successfully!");
         }
     }
 }
