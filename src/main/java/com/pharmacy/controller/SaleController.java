@@ -51,6 +51,14 @@ public class SaleController {
                              @RequestParam Long drugId,
                              @RequestParam Integer quantity,
                              Model model) {
+        if (drugId == null || quantity == null || quantity <= 0) {
+            model.addAttribute("error", "请选择药品并输入有效的销售数量");
+            List<Drug> drugs = drugService.getAllDrugs();
+            model.addAttribute("drugs", drugs);
+            List<Inventory> inventoryList = inventoryService.getAllInventory();
+            model.addAttribute("inventoryList", inventoryList);
+            return "sales/form";
+        }
         try {
             saleService.createSale(sale, drugId, quantity);
             return "redirect:/sales";

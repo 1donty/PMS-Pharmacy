@@ -1,7 +1,11 @@
 package com.pharmacy.service;
 
 import com.pharmacy.entity.Drug;
+import com.pharmacy.entity.Inventory;
+import com.pharmacy.entity.Sale;
 import com.pharmacy.repository.DrugRepository;
+import com.pharmacy.repository.InventoryRepository;
+import com.pharmacy.repository.SaleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,6 +18,12 @@ public class DrugService {
 
     @Autowired
     private DrugRepository drugRepository;
+
+    @Autowired
+    private InventoryRepository inventoryRepository;
+
+    @Autowired
+    private SaleRepository saleRepository;
 
     public List<Drug> getAllDrugs() {
         return drugRepository.findAll();
@@ -50,7 +60,14 @@ public class DrugService {
     }
 
     public void deleteDrug(Long id) {
-        drugRepository.deleteById(id);
+        Drug drug = drugRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("药品不存在"));
+        // 删除关联的销售记录
+        List<Sale> sales = saleRepository.findByDrugId(id);
+        saleRepository.deleteAll(sales);
+        // 删除关联的库存记录
+        inventoryRepository.findByDrugId(id).ifPresent(inventoryRepository::delete);
+        drugRepository.delete(drug);
     }
 
     public List<Drug> searchDrugs(String keyword) {

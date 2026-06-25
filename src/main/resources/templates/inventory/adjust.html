@@ -72,8 +72,7 @@
                     <div class="card-body">
                         <div class="alert alert-info">
                             <strong>药品:</strong> <span th:text="${inventory.drug.name}"></span><br>
-                            <strong>当前库存:</strong> <span th:text="${inventory.quantity}"></span> <span th:text="${inventory.drug.unit}"></span><br>
-                            <strong>警戒库存:</strong> <span th:text="${inventory.alertQuantity}"></span>
+                            <strong>当前库存:</strong> <span th:text="${inventory.quantity}"></span> <span th:text="${inventory.drug.unit}"></span>
                         </div>
 
                         <form th:action="@{/inventory/{id}/adjust(id=${inventory.id})}" method="post">

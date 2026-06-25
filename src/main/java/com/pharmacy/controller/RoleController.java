@@ -4,9 +4,11 @@ import com.pharmacy.entity.Menu;
 import com.pharmacy.entity.Role;
 import com.pharmacy.service.MenuService;
 import com.pharmacy.service.RoleService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import java.util.HashSet;
 import java.util.List;
@@ -38,7 +40,12 @@ public class RoleController {
     }
 
     @PostMapping
-    public String createRole(@ModelAttribute Role role, @RequestParam(value = "menuIds", required = false) List<Long> menuIds, Model model) {
+    public String createRole(@Valid @ModelAttribute Role role, BindingResult result,
+                             @RequestParam(value = "menuIds", required = false) List<Long> menuIds, Model model) {
+        if (result.hasErrors()) {
+            model.addAttribute("menus", menuService.getAllMenus());
+            return "roles/form";
+        }
         if (roleService.existsByName(role.getName())) {
             model.addAttribute("error", "角色名称已存在");
             model.addAttribute("menus", menuService.getAllMenus());
@@ -68,7 +75,12 @@ public class RoleController {
     }
 
     @PostMapping("/{id}")
-    public String updateRole(@PathVariable Long id, @ModelAttribute Role role, @RequestParam(value = "menuIds", required = false) List<Long> menuIds, Model model) {
+    public String updateRole(@PathVariable Long id, @Valid @ModelAttribute Role role, BindingResult result,
+                             @RequestParam(value = "menuIds", required = false) List<Long> menuIds, Model model) {
+        if (result.hasErrors()) {
+            model.addAttribute("menus", menuService.getAllMenus());
+            return "roles/form";
+        }
         try {
             Role existingRole = roleService.getRoleById(id).orElse(null);
             if (existingRole == null) {

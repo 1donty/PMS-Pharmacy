@@ -4,9 +4,11 @@ import com.pharmacy.entity.Role;
 import com.pharmacy.entity.User;
 import com.pharmacy.service.RoleService;
 import com.pharmacy.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import java.util.HashSet;
 import java.util.List;
@@ -38,7 +40,12 @@ public class UserController {
     }
 
     @PostMapping
-    public String createUser(@ModelAttribute User user, @RequestParam(value = "roleIds", required = false) List<Long> roleIds, Model model) {
+    public String createUser(@Valid @ModelAttribute User user, BindingResult result,
+                             @RequestParam(value = "roleIds", required = false) List<Long> roleIds, Model model) {
+        if (result.hasErrors()) {
+            model.addAttribute("roles", roleService.getAllRoles());
+            return "users/form";
+        }
         if (userService.existsByUsername(user.getUsername())) {
             model.addAttribute("error", "用户名已存在");
             model.addAttribute("roles", roleService.getAllRoles());
@@ -68,7 +75,12 @@ public class UserController {
     }
 
     @PostMapping("/{id}")
-    public String updateUser(@PathVariable Long id, @ModelAttribute User user, @RequestParam(value = "roleIds", required = false) List<Long> roleIds, Model model) {
+    public String updateUser(@PathVariable Long id, @Valid @ModelAttribute User user, BindingResult result,
+                             @RequestParam(value = "roleIds", required = false) List<Long> roleIds, Model model) {
+        if (result.hasErrors()) {
+            model.addAttribute("roles", roleService.getAllRoles());
+            return "users/form";
+        }
         try {
             User existingUser = userService.getUserById(id).orElse(null);
             if (existingUser == null) {

@@ -115,7 +115,6 @@ public class DataInitializer implements CommandLineRunner {
             Inventory inv1 = new Inventory();
             inv1.setDrug(drug1);
             inv1.setQuantity(500);
-            inv1.setAlertQuantity(100);
             inv1.setProductionDate(LocalDate.of(2024, 1, 15));
             inv1.setExpiryDate(LocalDate.of(2026, 1, 14));
             inv1.setBatchNumber("AMXL202401");
@@ -125,7 +124,6 @@ public class DataInitializer implements CommandLineRunner {
             Inventory inv2 = new Inventory();
             inv2.setDrug(drug2);
             inv2.setQuantity(300);
-            inv2.setAlertQuantity(50);
             inv2.setProductionDate(LocalDate.of(2024, 2, 20));
             inv2.setExpiryDate(LocalDate.of(2026, 2, 19));
             inv2.setBatchNumber("BLFH202402");
@@ -135,7 +133,6 @@ public class DataInitializer implements CommandLineRunner {
             Inventory inv3 = new Inventory();
             inv3.setDrug(drug3);
             inv3.setQuantity(450);
-            inv3.setAlertQuantity(80);
             inv3.setProductionDate(LocalDate.of(2024, 3, 10));
             inv3.setExpiryDate(LocalDate.of(2026, 3, 9));
             inv3.setBatchNumber("GMLK202403");
@@ -145,7 +142,6 @@ public class DataInitializer implements CommandLineRunner {
             Inventory inv4 = new Inventory();
             inv4.setDrug(drug4);
             inv4.setQuantity(1000);
-            inv4.setAlertQuantity(200);
             inv4.setProductionDate(LocalDate.of(2024, 1, 1));
             inv4.setExpiryDate(LocalDate.of(2026, 12, 31));
             inv4.setBatchNumber("WSSS202401");
@@ -155,7 +151,6 @@ public class DataInitializer implements CommandLineRunner {
             Inventory inv5 = new Inventory();
             inv5.setDrug(drug5);
             inv5.setQuantity(280);
-            inv5.setAlertQuantity(60);
             inv5.setProductionDate(LocalDate.of(2024, 4, 5));
             inv5.setExpiryDate(LocalDate.of(2026, 4, 4));
             inv5.setBatchNumber("HXZQ202404");

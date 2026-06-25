@@ -72,9 +72,6 @@
                             <a th:href="@{/inventory/new}" class="btn btn-primary">
                                 <i class="bi bi-plus-circle"></i> 添加库存
                             </a>
-                            <a th:href="@{/inventory/low-stock}" class="btn btn-warning">
-                                <i class="bi bi-exclamation-triangle"></i> 低库存
-                            </a>
                             <a th:href="@{/inventory/expiring}" class="btn btn-danger">
                                 <i class="bi bi-clock"></i> 即将过期
                             </a>
@@ -92,7 +89,6 @@
                                     <th>药品名称</th>
                                     <th>药品编码</th>
                                     <th>库存数量</th>
-                                    <th>警戒库存</th>
                                     <th>批号</th>
                                     <th>有效期</th>
                                     <th>供应商</th>
@@ -106,15 +102,13 @@
                                     <td th:text="${inv.drug.name}"></td>
                                     <td th:text="${inv.drug.drugCode}"></td>
                                     <td>
-                                        <span th:class="${inv.isLowStock() ? 'text-danger fw-bold' : ''}" th:text="${inv.quantity}"></span>
+                                        <span th:class="${inv.isExpired() ? 'text-danger fw-bold' : ''}" th:text="${inv.quantity}"></span>
                                     </td>
-                                    <td th:text="${inv.alertQuantity}"></td>
                                     <td th:text="${inv.batchNumber}"></td>
                                     <td th:text="${#temporals.format(inv.expiryDate, 'yyyy-MM-dd')}"></td>
                                     <td th:text="${inv.supplier}"></td>
                                     <td>
                                         <span th:if="${inv.isExpired()}" class="badge bg-danger">已过期</span>
-                                        <span th:elif="${inv.isLowStock()}" class="badge bg-warning text-dark">低库存</span>
                                         <span th:else class="badge bg-success">正常</span>
                                     </td>
                                     <td>

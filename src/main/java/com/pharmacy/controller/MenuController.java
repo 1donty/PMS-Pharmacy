@@ -2,9 +2,11 @@ package com.pharmacy.controller;
 
 import com.pharmacy.entity.Menu;
 import com.pharmacy.service.MenuService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
@@ -31,7 +33,11 @@ public class MenuController {
     }
 
     @PostMapping
-    public String createMenu(@ModelAttribute Menu menu, Model model) {
+    public String createMenu(@Valid @ModelAttribute Menu menu, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            model.addAttribute("parentMenus", menuService.getParentMenus());
+            return "menus/form";
+        }
         menuService.saveMenu(menu);
         return "redirect:/menus";
     }
@@ -48,7 +54,11 @@ public class MenuController {
     }
 
     @PostMapping("/{id}")
-    public String updateMenu(@PathVariable Long id, @ModelAttribute Menu menu) {
+    public String updateMenu(@PathVariable Long id, @Valid @ModelAttribute Menu menu, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            model.addAttribute("parentMenus", menuService.getParentMenus());
+            return "menus/form";
+        }
         menuService.updateMenu(id, menu);
         return "redirect:/menus";
     }

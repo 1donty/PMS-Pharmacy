@@ -15,9 +15,6 @@ public interface InventoryRepository extends JpaRepository<Inventory, Long> {
 
     Optional<Inventory> findByDrugId(Long drugId);
 
-    @Query("SELECT i FROM Inventory i WHERE i.quantity <= i.alertQuantity")
-    List<Inventory> findLowStockInventory();
-
     @Query("SELECT i FROM Inventory i WHERE i.expiryDate IS NOT NULL AND i.expiryDate < :date")
     List<Inventory> findExpiredInventory(@Param("date") LocalDate date);
 

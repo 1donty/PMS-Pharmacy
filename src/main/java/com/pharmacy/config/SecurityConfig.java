@@ -21,7 +21,6 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests((requests) -> requests
                 .requestMatchers("/", "/login", "/register", "/webjars/**", "/css/**").permitAll()
                 .anyRequest().authenticated()
@@ -48,7 +47,7 @@ public class SecurityConfig {
         return username -> userRepository.findByUsername(username)
             .map(user -> org.springframework.security.core.userdetails.User.withUsername(user.getUsername())
                 .password(user.getPassword())
-                .roles(user.getRoles().stream()
+                .authorities(user.getRoles().stream()
                     .map(role -> role.getCode())
                     .toArray(String[]::new))
                 .build())

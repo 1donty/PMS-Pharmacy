@@ -95,14 +95,6 @@ public class InventoryController {
         return "redirect:/inventory";
     }
 
-    @GetMapping("/low-stock")
-    public String getLowStock(Model model) {
-        List<Inventory> inventory = inventoryService.getLowStockInventory();
-        model.addAttribute("inventoryList", inventory);
-        model.addAttribute("alert", "低库存警告");
-        return "inventory/list";
-    }
-
     @GetMapping("/expired")
     public String getExpired(Model model) {
         List<Inventory> inventory = inventoryService.getExpiredInventory();

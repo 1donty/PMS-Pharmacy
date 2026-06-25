@@ -23,10 +23,6 @@ public class Inventory {
     @Column(nullable = false)
     private Integer quantity;
 
-    @PositiveOrZero(message = "警戒库存不能为负数")
-    @Column(name = "alert_quantity")
-    private Integer alertQuantity = 100;
-
     @Column(name = "production_date")
     private LocalDate productionDate;
 
@@ -80,14 +76,6 @@ public class Inventory {
         this.quantity = quantity;
     }
 
-    public Integer getAlertQuantity() {
-        return alertQuantity;
-    }
-
-    public void setAlertQuantity(Integer alertQuantity) {
-        this.alertQuantity = alertQuantity;
-    }
-
     public LocalDate getProductionDate() {
         return productionDate;
     }
@@ -134,10 +122,6 @@ public class Inventory {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
-    }
-
-    public boolean isLowStock() {
-        return quantity <= alertQuantity;
     }
 
     public boolean isExpired() {

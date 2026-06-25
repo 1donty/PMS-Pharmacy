@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,6 +35,9 @@ public class InventoryService {
     public Inventory addInventory(Inventory inventory, Long drugId) {
         Drug drug = drugService.getDrugById(drugId)
                 .orElseThrow(() -> new RuntimeException("药品不存在"));
+        if (inventoryRepository.findByDrugId(drugId).isPresent()) {
+            throw new RuntimeException("该药品已有库存记录");
+        }
         inventory.setDrug(drug);
         return inventoryRepository.save(inventory);
     }
@@ -44,7 +46,6 @@ public class InventoryService {
         Inventory inventory = inventoryRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("库存记录不存在"));
         inventory.setQuantity(inventoryDetails.getQuantity());
-        inventory.setAlertQuantity(inventoryDetails.getAlertQuantity());
         inventory.setProductionDate(inventoryDetails.getProductionDate());
         inventory.setExpiryDate(inventoryDetails.getExpiryDate());
         inventory.setBatchNumber(inventoryDetails.getBatchNumber());
@@ -65,10 +66,6 @@ public class InventoryService {
 
     public void deleteInventory(Long id) {
         inventoryRepository.deleteById(id);
-    }
-
-    public List<Inventory> getLowStockInventory() {
-        return inventoryRepository.findLowStockInventory();
     }
 
     public List<Inventory> getExpiredInventory() {

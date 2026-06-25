@@ -93,12 +93,12 @@
 
                             <div class="row mb-3">
                                 <div class="col-md-6">
-                                    <label class="form-label">警戒库存</label>
-                                    <input type="number" min="0" th:field="*{alertQuantity}" class="form-control" placeholder="低于此数量将触发警告">
-                                </div>
-                                <div class="col-md-6">
                                     <label class="form-label">批号</label>
                                     <input type="text" th:field="*{batchNumber}" class="form-control">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">供应商</label>
+                                    <input type="text" th:field="*{supplier}" class="form-control">
                                 </div>
                             </div>
 
@@ -111,11 +111,6 @@
                                     <label class="form-label">有效期至</label>
                                     <input type="date" th:field="*{expiryDate}" class="form-control">
                                 </div>
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label">供应商</label>
-                                <input type="text" th:field="*{supplier}" class="form-control">
                             </div>
 
                             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
